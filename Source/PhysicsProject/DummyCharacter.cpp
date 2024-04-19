@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "DummyCharacter.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 ADummyCharacter::ADummyCharacter()
@@ -29,16 +29,18 @@ void ADummyCharacter::Tick(float DeltaTime)
 void ADummyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	PlayerInputComponent->BindAction(FName("Shoot"), EInputEvent::IE_Pressed, this, &ADummyCharacter::Shoot);
+	PlayerInputComponent->BindAction(FName("ShootForce"), EInputEvent::IE_Pressed, this, &ADummyCharacter::ShootForce);
 }
 
-bool ADummyCharacter::Shoot(const float ShootDist, const float ImpulseIntensity)
+void ADummyCharacter::Shoot()
 {
 	UWorld* World = GetWorld();
 	FVector StartPoint = GetActorLocation();
-	FVector EndPoint = StartPoint + GetActorForwardVector() * ShootDist;
+	FVector EndPoint = StartPoint + GetActorForwardVector() * ShootDistance;
 	FHitResult HitResult;
 	bool bHitted = World->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint, ECollisionChannel::ECC_Visibility);
+	DrawDebugLine(World, StartPoint, EndPoint, FColor::Blue, false, 0.2);
 
 	if (bHitted)
 	{
@@ -51,10 +53,33 @@ bool ADummyCharacter::Shoot(const float ShootDist, const float ImpulseIntensity)
 				Impulse.Normalize();
 				Impulse *= ImpulseIntensity;
 				HitComponent->AddImpulseAtLocation(Impulse, HitResult.ImpactPoint);
-				return true;
 			}
 		}
 	}
-	return false;
+}
+
+void ADummyCharacter::ShootForce()
+{
+	UWorld* World = GetWorld();
+	FVector StartPoint = GetActorLocation();
+	FVector EndPoint = StartPoint + GetActorForwardVector() * ShootDistance;
+	FHitResult HitResult;
+	bool bHitted = World->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint, ECollisionChannel::ECC_Visibility);
+	DrawDebugLine(World, StartPoint, EndPoint, FColor::Blue, false, 0.2);
+
+	if (bHitted)
+	{
+		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
+		if (HitComponent)
+		{
+			if (HitComponent->IsSimulatingPhysics())
+			{
+				FVector Force = EndPoint - StartPoint;
+				Force.Normalize();
+				Force *= ForceIntensity;
+				//HitComponent->AddForceAtLocation(Force, HitResult.ImpactPoint);
+			}
+		}
+	}
 }
 

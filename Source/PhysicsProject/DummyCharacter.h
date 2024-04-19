@@ -15,7 +15,15 @@ public:
 	// Sets default values for this character's properties
 	ADummyCharacter();
 
-	
+	//Impulse
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ShootDistance = 1000;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ImpulseIntensity = 10000;
+
+	//Force
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ForceIntensity = 1000;
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,6 +37,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintCallable)
-	bool Shoot(const float ShootDistance, const float ImpulseIntensity);
+	void Shoot();
+
+	UFUNCTION(BlueprintCallable)
+	void ShootForce();
 
 };
