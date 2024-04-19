@@ -32,3 +32,29 @@ void ADummyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 }
 
+bool ADummyCharacter::Shoot(const float ShootDist, const float ImpulseIntensity)
+{
+	UWorld* World = GetWorld();
+	FVector StartPoint = GetActorLocation();
+	FVector EndPoint = StartPoint + GetActorForwardVector() * ShootDist;
+	FHitResult HitResult;
+	bool bHitted = World->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint, ECollisionChannel::ECC_Visibility);
+
+	if (bHitted)
+	{
+		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
+		if (HitComponent)
+		{
+			if (HitComponent->IsSimulatingPhysics())
+			{
+				FVector Impulse = EndPoint - StartPoint;
+				Impulse.Normalize();
+				Impulse *= ImpulseIntensity;
+				HitComponent->AddImpulseAtLocation(Impulse, HitResult.ImpactPoint);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
