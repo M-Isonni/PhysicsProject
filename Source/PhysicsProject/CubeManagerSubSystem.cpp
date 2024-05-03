@@ -7,13 +7,11 @@
 
 void UCubeManagerSubSystem::SpawnCube(FVector SpawnLocation, FRotator SpawnRotation)
 {
-	FString assetPath = "/Game/Blueprints/EnvironmentObjs/BP_Cube.BPCube";
+	FString AssetPath = "/Game/Blueprints/EnvironmentObjs/BP_Cube.BPCube";
 	UWorld* World = GetWorld();
-	UObject* obj = LoadObject < UObject >(nullptr, *assetPath);
-	AActor* NewActor = World->SpawnActor < AActor >(obj->GetClass(), SpawnLocation, SpawnRotation);
-	UStaticMeshComponent* Mesh = NewActor->GetComponentByClass < UStaticMeshComponent > ();
-	//UCubemanagerSubSystem* MySubsystem = GameInstance->GetSubsystem<UCubeManagerSubSystem>();
-
+	UObject* Obj = LoadObject <UObject>(nullptr, *AssetPath);
+	AActor* NewActor = World->SpawnActor<AActor>(Obj->GetClass(), SpawnLocation, SpawnRotation);
+	UStaticMeshComponent* Mesh = NewActor->GetComponentByClass <UStaticMeshComponent>();
 
 	if (Mesh) 
 	{

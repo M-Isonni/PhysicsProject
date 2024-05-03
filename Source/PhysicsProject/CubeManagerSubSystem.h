@@ -14,8 +14,10 @@ class PHYSICSPROJECT_API UCubeManagerSubSystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 public: 
-	UFUNCTION(BlueprintCallable);
+
+	UFUNCTION(BlueprintCallable)
 	void SpawnCube(FVector SpawnLocation, FRotator SpawnRotation);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite);
 	TArray < AActor* > SpawnedActors;
 	
